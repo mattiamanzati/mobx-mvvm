@@ -1,6 +1,6 @@
 {
   "name": "mobx-mvvm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MobX MVVM solution based off React and inspired by Prism",
   "main": "./lib/index.js",
   "declarations": "./declarations/index.d.ts",
@@ -33,10 +33,15 @@
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-runtime": "^6.11.6",
     "rimraf": "^2.5.4",
+    "ts-loader": "^0.8.2",
     "typescript": "^2.0.0"
   },
   "peerDependencies": {
     "mobx": "^2.4.3",
     "mobx-react": "^3.5.5"
-  }
+  },
+  "files": [
+    "lib",
+    "declarations"
+  ]
 }

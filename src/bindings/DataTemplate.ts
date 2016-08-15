@@ -34,8 +34,8 @@ export class DataTemplate extends React.Component<IDataTemplateProps, any>{
      * Lifecycle methods
      */
     constructor(props, ctx){
-        super()
-        this.updateProps(this.props)
+        super(props, ctx)
+        this.updateProps(props)
     }
 
     componentWillReceiveProps(newProps: IDataTemplateProps){
@@ -47,6 +47,8 @@ export class DataTemplate extends React.Component<IDataTemplateProps, any>{
      */
     updateProps(newProps: IDataTemplateProps){
         const {source, children} = newProps
+
+        console.log(newProps)
 
         this.source = source
         this.children = observer(children)
