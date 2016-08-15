@@ -1,0 +1,4 @@
+// Inserire le impostazioni in questo file per sovrascrivere quelle utente e predefinite.
+{
+    "typescript.tsdk": "./node_modules/typescript/lib/"
+}

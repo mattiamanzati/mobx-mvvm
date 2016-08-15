@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es2015",
+        "module": "commonjs",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": true,
+        "declarationDir": "./declarations",
+        "outDir": "./lib-es2015",
+        "jsx": "react"
+    },
+    "files": [
+        "./src/index.ts",
+        "./typings/index.d.ts"
+    ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "mobx-mvvm",
+  "version": "1.0.0",
+  "description": "MobX MVVM solution based off React and inspired by Prism",
+  "main": "./lib/index.js",
+  "declarations": "./declarations/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:lib": "tsc && babel lib-es2015 --out-dir lib",
+    "clean:lib": "rimraf declarations && rimraf lib && rimraf lib-es2015",
+    "prepublish": "npm run clean:lib && npm run build:lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattiamanzati/mobx-mvvm.git"
+  },
+  "keywords": [
+    "mobx",
+    "mvvm",
+    "react",
+    "mobx-react"
+  ],
+  "author": "Mattia Manzati",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mattiamanzati/mobx-mvvm/issues"
+  },
+  "homepage": "https://github.com/mattiamanzati/mobx-mvvm#readme",
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-plugin-transform-runtime": "^6.12.0",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-es2015-loose": "^7.0.0",
+    "babel-runtime": "^6.11.6",
+    "rimraf": "^2.5.4",
+    "typescript": "^2.0.0"
+  },
+  "peerDependencies": {
+    "mobx": "^2.4.3",
+    "mobx-react": "^3.5.5"
+  }
+}
