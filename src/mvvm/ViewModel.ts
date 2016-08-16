@@ -6,5 +6,4 @@ export interface IMountAware{
     willMount?()
     didMount?()
     willUnmount?()
-    didUnmount?()
 }

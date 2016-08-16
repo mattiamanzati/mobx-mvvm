@@ -4,7 +4,7 @@ export {ICommandThunk, ICanExecuteCommandThunk, Command} from './commands/Comman
 export {CompositeCommand} from './commands/CompositeCommand'
 
 // mvvm
-export {IViewModel} from './mvvm/ViewModel'
+export {IViewModel, IMountAware} from './mvvm/ViewModel'
 export {IView, IViewProps} from './mvvm/View'
 
 // services
@@ -12,3 +12,4 @@ export {IPubSubEvent, IPubSubEventDisposer, IPubSubEventListener, IPubSubEventSe
 
 // utilities
 export {IEvent, IEventListener, IEventListenerDisposer, createEvent} from './utils/createEvent'
+export {createComponent} from './utils/createComponent'
