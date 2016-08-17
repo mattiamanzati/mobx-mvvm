@@ -1,12 +1,16 @@
 import {observable} from 'mobx'
-import {IViewModel, IMountAware} from '../../src/index'
+import {IViewModel, IMountAware, createEvent} from '../../src/index'
 import {Todo} from './Todo'
 
 export class TodoViewModel implements IViewModel, IMountAware{
     @observable todos: Todo[] = []   
+    @observable user: string = ''
+    onTodoAdded = createEvent<Todo>()
 
     add(){
-        this.todos.push(new Todo())
+        const newTodo = new Todo()
+        this.todos.push(newTodo)
+        this.onTodoAdded.dispatch(newTodo)
     }
 
     willMount(){

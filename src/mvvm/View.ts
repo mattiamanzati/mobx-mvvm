@@ -2,9 +2,7 @@ import * as React from 'react'
 import {IViewModel} from './ViewModel'
 
 export interface IViewProps<TViewModel extends IViewModel>{
-    dataSource: TViewModel
+    model: TViewModel
 }
 
-export interface IView<TViewModel extends IViewModel>{
-    (props: IViewProps<TViewModel>): React.ReactElement<any>
-}
+export type IView<TViewModel extends IViewModel> = React.ComponentClass<IViewProps<TViewModel>> | React.StatelessComponent<IViewProps<TViewModel>>

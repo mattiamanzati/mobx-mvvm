@@ -1,9 +1,9 @@
 export interface IViewModel{
-    dispose?()
+    dispose?(): void
 }
 
 export interface IMountAware{
-    willMount?()
-    didMount?()
-    willUnmount?()
+    willMount?(): void
+    didMount?(): void
+    willUnmount?(): void
 }

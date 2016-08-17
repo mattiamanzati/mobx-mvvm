@@ -2,10 +2,11 @@ import * as React from 'react'
 import {IView} from '../../src/index'
 import {TodoViewModel} from './TodoViewModel'
 
-export const render: IView<TodoViewModel> = ({dataSource}) => 
+export const render: IView<TodoViewModel> = ({model}) => 
     <div>
-        <button onClick={() => dataSource.add()}>New Todo</button>
-        {dataSource.todos.map(
+        <h1>Hello {model.user}! Here's your todo list!</h1>
+        <button onClick={() => model.add()}>New Todo</button>
+        {model.todos.map(
             (todo, i) => 
                 <p key={todo.id}>
                     <input type="checkbox" checked={todo.done} onChange={e => todo.done = e.target.checked} />

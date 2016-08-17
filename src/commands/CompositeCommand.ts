@@ -4,8 +4,8 @@ import {CommandBase, ICommand} from './CommandBase'
  * Since CompositeCommand provides a mechanism to subscribe sub-commands, wi will allow to do that
  */
 export interface ICompositeCommand<TPayload> extends ICommand<TPayload>{
-    registerCommand(command: ICommand<TPayload>)
-    unregisterCommand(command: ICommand<TPayload>)
+    registerCommand(command: ICommand<TPayload>): void
+    unregisterCommand(command: ICommand<TPayload>): void
 }
 
 /**
@@ -65,7 +65,7 @@ export class CompositeCommand<TPayload> extends CommandBase<TPayload> implements
 
         // make a shallow copy to avoid problems
         const commands = this._registeredCommands.slice()
-        var executedCommands = []
+        var executedCommands: Promise<any>[] = []
 
         // runs all subcommands
         for(var i = 0; i < commands.length; i++){
