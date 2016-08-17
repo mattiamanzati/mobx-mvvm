@@ -40,26 +40,27 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
 
             disposers: IEventListenerDisposer[] = []
 
-            updateModel(props: TProps & IComponentProps<TViewModel>, state: IComponentState<TViewModel>){
-                if(state.model){
-                    // cleanup subscriptions
-                    this.disposers.map(disposer => disposer())
-                    this.disposers = []
+            updateModel(model: TViewModel, props: TProps & IComponentProps<TViewModel>){
+                // if no model, do nothing!
+                if(!model) return
 
-                    // copy over input props
-                    for(var i = 0; i < inputs.length; i++){
-                        const input = inputs[i]
-                        if((<any>props)[input]){
-                            (<any>state.model)[input] = (<any>props)[input]
-                        }
+                // cleanup subscriptions
+                this.disposers.map(disposer => disposer())
+                this.disposers = []
+
+                // copy over input props
+                for(var i = 0; i < inputs.length; i++){
+                    const input = inputs[i]
+                    if((<any>props)[input]){
+                        (<any>model)[input] = (<any>props)[input]
                     }
+                }
 
-                    // subscribe output events
-                    for(var i = 0; i < outputs.length; i++){
-                        const output = outputs[i]
-                        if((<any>props)[output] && (<any>state.model)[output] && typeof (<any>state.model)[output].subscribe === 'function'){
-                            this.disposers.push((<any>state.model)[output].subscribe((<any>props)[output]))
-                        }
+                // subscribe output events
+                for(var i = 0; i < outputs.length; i++){
+                    const output = outputs[i]
+                    if((<any>props)[output] && (<any>model)[output] && typeof (<any>model)[output].subscribe === 'function'){
+                        this.disposers.push((<any>model)[output].subscribe((<any>props)[output]))
                     }
                 }
             }
@@ -71,6 +72,10 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
                     if(state.model && state.shouldDispose){
                         state.model.dispose()
                     }
+
+                    // update model props
+                    this.updateModel(props.model, props)
+
                     // return the new one
                     return {model: props.model, shouldDispose: false}
                 }
@@ -78,6 +83,10 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
                 // no model was present, so we need to internally create it
                 if(!state.model){
                     const model = createViewModel<TViewModel>(this.context, viewModel)
+
+                    // update model props
+                    this.updateModel(model, props)
+
                     return {model, shouldDispose: true}
                 }
 
@@ -88,12 +97,10 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
             constructor(props: TProps & IComponentProps<TViewModel>, ctx: any){
                 super(props, ctx)
                 this.state = this.nextState(props, {model: null, shouldDispose: false}, this.context)
-                this.updateModel(props, this.state)
             }
 
             componentWillReceiveProps(nextProps: TProps & IComponentProps<TViewModel>){
                 this.setState(this.nextState(nextProps, this.state, this.context))
-                this.updateModel(nextProps, this.state)
             }
 
             render(){

@@ -55,10 +55,12 @@
 	    displayName: 'TodoEditor',
 	    view: TodoView_1.render,
 	    inputs: ['user'],
-	    outputs: ['onTodoAdded']
+	    outputs: ['onTodoAdded', 'onTodoSaved']
 	})(TodoViewModel_1.TodoViewModel);
-	ReactDOM.render(React.createElement(TodoEditor, { user: "mattiamanzati", onTodoAdded: function onTodoAdded(todo) {
-	        return alert('New todo!');
+	ReactDOM.render(React.createElement(TodoEditor, { user: "mattiamanzati", onTodoSaved: function onTodoSaved() {
+	        return alert('Todos saved!');
+	    }, onTodoAdded: function onTodoAdded(todo) {
+	        return console.log('New todo:', todo);
 	    } }), document.getElementById('app'));
 
 /***/ },
@@ -21474,12 +21476,15 @@
 	"use strict";
 
 	var React = __webpack_require__(168);
+	// create my component view, it's a React Component taking a model instance as prop.
 	exports.render = function (_ref) {
 	    var model = _ref.model;
-	    return React.createElement("div", null, React.createElement("h1", null, "Hello ", model.user, "! Here's your todo list!"), React.createElement("button", { onClick: function onClick() {
+	    return React.createElement("div", null, React.createElement("h1", null, "Hello ", model.user, "! Here's your todo list!"), React.createElement("p", null, React.createElement("button", { onClick: function onClick() {
 	            return model.add();
-	        } }, "New Todo"), model.todos.map(function (todo, i) {
-	        return React.createElement("p", { key: todo.id }, React.createElement("input", { type: "checkbox", checked: todo.done, onChange: function onChange(e) {
+	        } }, "New Todo"), React.createElement("button", { onClick: function onClick() {
+	            return model.save();
+	        } }, "Save Todos")), model.todos.map(function (todo, i) {
+	        return React.createElement("p", { key: todo.id }, "#", todo.id, " ", React.createElement("strong", null, todo.text), " ", React.createElement("i", null, todo.done ? 'DONE!' : ''), React.createElement("br", null), React.createElement("input", { type: "checkbox", checked: todo.done, onChange: function onChange(e) {
 	                return todo.done = e.target.checked;
 	            } }), React.createElement("input", { type: "text", value: todo.text, onChange: function onChange(e) {
 	                return todo.text = e.target.value;
@@ -21518,18 +21523,33 @@
 	    function TodoViewModel() {
 	        _classCallCheck(this, TodoViewModel);
 
+	        // list of todos
 	        this.todos = [];
+	        // current user, passed in from inputs in createComponent()
 	        this.user = '';
+	        // action to fire whenever a todo is added, subscribed from outputs in createComponent()
 	        this.onTodoAdded = index_1.createEvent();
+	        this.onTodoSaved = index_1.createEvent();
 	    }
+	    // view action
+
 
 	    _createClass(TodoViewModel, [{
 	        key: "add",
 	        value: function add() {
+	            // create a todo
 	            var newTodo = new Todo_1.Todo();
 	            this.todos.push(newTodo);
+	            // dispatch the onTodoAdded event
 	            this.onTodoAdded.dispatch(newTodo);
 	        }
+	    }, {
+	        key: "save",
+	        value: function save() {
+	            this.onTodoSaved.dispatch(this.todos);
+	        }
+	        // lifecycle method example
+
 	    }, {
 	        key: "willMount",
 	        value: function willMount() {
@@ -30932,30 +30952,29 @@
 
 	                _this.disposers = [];
 	                _this.state = _this.nextState(props, { model: null, shouldDispose: false }, _this.context);
-	                _this.updateModel(props, _this.state);
 	                return _this;
 	            }
 
-	            NewComponent.prototype.updateModel = function updateModel(props, state) {
-	                if (state.model) {
-	                    // cleanup subscriptions
-	                    this.disposers.map(function (disposer) {
-	                        return disposer();
-	                    });
-	                    this.disposers = [];
-	                    // copy over input props
-	                    for (var i = 0; i < inputs.length; i++) {
-	                        var input = inputs[i];
-	                        if (props[input]) {
-	                            state.model[input] = props[input];
-	                        }
+	            NewComponent.prototype.updateModel = function updateModel(model, props) {
+	                // if no model, do nothing!
+	                if (!model) return;
+	                // cleanup subscriptions
+	                this.disposers.map(function (disposer) {
+	                    return disposer();
+	                });
+	                this.disposers = [];
+	                // copy over input props
+	                for (var i = 0; i < inputs.length; i++) {
+	                    var input = inputs[i];
+	                    if (props[input]) {
+	                        model[input] = props[input];
 	                    }
-	                    // subscribe output events
-	                    for (var i = 0; i < outputs.length; i++) {
-	                        var output = outputs[i];
-	                        if (props[output] && state.model[output] && typeof state.model[output].subscribe === 'function') {
-	                            this.disposers.push(state.model[output].subscribe(props[output]));
-	                        }
+	                }
+	                // subscribe output events
+	                for (var i = 0; i < outputs.length; i++) {
+	                    var output = outputs[i];
+	                    if (props[output] && model[output] && typeof model[output].subscribe === 'function') {
+	                        this.disposers.push(model[output].subscribe(props[output]));
 	                    }
 	                }
 	            };
@@ -30967,12 +30986,16 @@
 	                    if (state.model && state.shouldDispose) {
 	                        state.model.dispose();
 	                    }
+	                    // update model props
+	                    this.updateModel(props.model, props);
 	                    // return the new one
 	                    return { model: props.model, shouldDispose: false };
 	                }
 	                // no model was present, so we need to internally create it
 	                if (!state.model) {
 	                    var model = ViewModelLocator_1.createViewModel(this.context, viewModel);
+	                    // update model props
+	                    this.updateModel(model, props);
 	                    return { model: model, shouldDispose: true };
 	                }
 	                // nothing changed so far
@@ -30981,7 +31004,6 @@
 
 	            NewComponent.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
 	                this.setState(this.nextState(nextProps, this.state, this.context));
-	                this.updateModel(nextProps, this.state);
 	            };
 
 	            NewComponent.prototype.render = function render() {
@@ -48392,11 +48414,13 @@
 	    if ((typeof Reflect === "undefined" ? "undefined" : _typeof(Reflect)) === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
 	var mobx_1 = __webpack_require__(177);
+	// newId is a utility function used to create a new progressive id
 	var _newId = 0;
 	function newId() {
 	    ++_newId;
 	    return _newId;
 	}
+	// Create my domain-model for todos
 
 	var Todo = function Todo() {
 	    _classCallCheck(this, Todo);

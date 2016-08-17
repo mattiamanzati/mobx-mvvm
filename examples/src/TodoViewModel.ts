@@ -9,6 +9,7 @@ export class TodoViewModel implements IViewModel, IMountAware{
     @observable user: string = ''
     // action to fire whenever a todo is added, subscribed from outputs in createComponent()
     onTodoAdded = createEvent<Todo>()
+    onTodoSaved = createEvent<Todo[]>()
 
     // view action
     add(){
@@ -17,6 +18,10 @@ export class TodoViewModel implements IViewModel, IMountAware{
         this.todos.push(newTodo)
         // dispatch the onTodoAdded event
         this.onTodoAdded.dispatch(newTodo)
+    }
+
+    save(){
+        this.onTodoSaved.dispatch(this.todos)
     }
 
     // lifecycle method example

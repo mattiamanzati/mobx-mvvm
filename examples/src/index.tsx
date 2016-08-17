@@ -8,7 +8,7 @@ const TodoEditor = createComponent({
     displayName: 'TodoEditor',
     view: render,
     inputs: ['user'],
-    outputs: ['onTodoAdded']
+    outputs: ['onTodoAdded', 'onTodoSaved']
 })(TodoViewModel)
 
-ReactDOM.render(<TodoEditor user="mattiamanzati" onTodoAdded={(todo) => alert('New todo!')} />, document.getElementById('app'))
+ReactDOM.render(<TodoEditor user="mattiamanzati" onTodoSaved={() => alert('Todos saved!')} onTodoAdded={(todo) => console.log('New todo:', todo)} />, document.getElementById('app'))

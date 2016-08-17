@@ -6,10 +6,11 @@ import {TodoViewModel} from './TodoViewModel'
 export const render: IView<TodoViewModel> = ({model}) => 
     <div>
         <h1>Hello {model.user}! Here's your todo list!</h1>
-        <button onClick={() => model.add()}>New Todo</button>
+        <p><button onClick={() => model.add()}>New Todo</button><button onClick={() => model.save()}>Save Todos</button></p>
         {model.todos.map(
             (todo, i) => 
                 <p key={todo.id}>
+                    #{todo.id} <strong>{todo.text}</strong> <i>{todo.done ? 'DONE!' : ''}</i><br/>
                     <input type="checkbox" checked={todo.done} onChange={e => todo.done = e.target.checked} />
                     <input type="text" value={todo.text} onChange={e => todo.text = e.target.value} />
                 </p>
