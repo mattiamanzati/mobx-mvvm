@@ -1,4 +1,5 @@
 export interface IViewModel{
+    init?(): void
     dispose?(): void
 }
 

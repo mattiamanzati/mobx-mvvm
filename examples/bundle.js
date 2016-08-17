@@ -30996,14 +30996,40 @@
 	                    var model = ViewModelLocator_1.createViewModel(this.context, viewModel);
 	                    // update model props
 	                    this.updateModel(model, props);
+	                    // if initialize is available, call it
+	                    if (model.init) model.init();
 	                    return { model: model, shouldDispose: true };
 	                }
 	                // nothing changed so far
 	                return state;
 	            };
 
+	            NewComponent.prototype.callLifeCycleMethod = function callLifeCycleMethod(methodName) {
+	                var model = this.state.model;
+
+	                if (model && model[methodName]) {
+	                    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	                        args[_key - 1] = arguments[_key];
+	                    }
+
+	                    model[methodName].apply(model, args);
+	                }
+	            };
+
 	            NewComponent.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
 	                this.setState(this.nextState(nextProps, this.state, this.context));
+	            };
+
+	            NewComponent.prototype.componentWillMount = function componentWillMount() {
+	                this.callLifeCycleMethod('willMount');
+	            };
+
+	            NewComponent.prototype.componentDidMount = function componentDidMount() {
+	                this.callLifeCycleMethod('didMount');
+	            };
+
+	            NewComponent.prototype.componentWillUnmount = function componentWillUnmount() {
+	                this.callLifeCycleMethod('willUnmount');
 	            };
 
 	            NewComponent.prototype.render = function render() {

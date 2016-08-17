@@ -87,11 +87,21 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
                     // update model props
                     this.updateModel(model, props)
 
+                    // if initialize is available, call it
+                    if(model.init) model.init()
+
                     return {model, shouldDispose: true}
                 }
 
                 // nothing changed so far
                 return state
+            }
+
+            callLifeCycleMethod(methodName: string, ...args: any[]){
+                const {model} = this.state
+                if(model && (<any> model)[methodName]){
+                    (<any> model)[methodName](...args)
+                }
             }
 
             constructor(props: TProps & IComponentProps<TViewModel>, ctx: any){
@@ -101,6 +111,16 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
 
             componentWillReceiveProps(nextProps: TProps & IComponentProps<TViewModel>){
                 this.setState(this.nextState(nextProps, this.state, this.context))
+            }
+
+            componentWillMount(){
+                this.callLifeCycleMethod('willMount')
+            }
+            componentDidMount(){
+                this.callLifeCycleMethod('didMount')
+            }
+            componentWillUnmount(){
+                this.callLifeCycleMethod('willUnmount')
             }
 
             render(){
