@@ -1,9 +1,10 @@
 import * as React from 'react'
 import {observer} from 'mobx-react'
 import {IView, IViewProps} from './View'
-import {IViewModel} from './ViewModel'
+import {IViewModel, INPUT_ANNOTATION, OUTPUT_ANNOTATION} from './ViewModel'
 import {createViewModel} from './ViewModelLocator'
 import {IEventListenerDisposer} from '../utils/createEvent'
+import {getPropertiesWithTag} from '../utils/decorators'
 
 export interface IComponentDeclaration<TViewModel extends IViewModel>{
     view: IView<TViewModel>
@@ -41,24 +42,28 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
             disposers: IEventListenerDisposer[] = []
 
             updateModel(model: TViewModel, props: TProps & IComponentProps<TViewModel>){
-                // if no model, do nothing!
-                if(!model) return
-
                 // cleanup subscriptions
                 this.disposers.map(disposer => disposer())
                 this.disposers = []
 
+                // if no model, do nothing!
+                if(!model) return
+
+                // get input and output props
+                const inputProps = inputs.concat(getPropertiesWithTag(INPUT_ANNOTATION, model))
+                const outputProps = outputs.concat(getPropertiesWithTag(OUTPUT_ANNOTATION, model))
+
                 // copy over input props
-                for(var i = 0; i < inputs.length; i++){
-                    const input = inputs[i]
+                for(var i = 0; i < inputProps.length; i++){
+                    const input = inputProps[i]
                     if((<any>props)[input]){
                         (<any>model)[input] = (<any>props)[input]
                     }
                 }
 
                 // subscribe output events
-                for(var i = 0; i < outputs.length; i++){
-                    const output = outputs[i]
+                for(var i = 0; i < outputProps.length; i++){
+                    const output = outputProps[i]
                     if((<any>props)[output] && (<any>model)[output] && typeof (<any>model)[output].subscribe === 'function'){
                         this.disposers.push((<any>model)[output].subscribe((<any>props)[output]))
                     }
@@ -86,9 +91,6 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
 
                     // update model props
                     this.updateModel(model, props)
-
-                    // if initialize is available, call it
-                    if(model.init) model.init()
 
                     return {model, shouldDispose: true}
                 }
@@ -121,6 +123,10 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
             }
             componentWillUnmount(){
                 this.callLifeCycleMethod('willUnmount')
+                this.updateModel(null, this.props)
+                if(this.state.model && this.state.shouldDispose){
+                    this.state.model.dispose()
+                }
             }
 
             render(){

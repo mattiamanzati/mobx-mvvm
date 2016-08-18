@@ -4,7 +4,7 @@ export {ICommandThunk, ICanExecuteCommandThunk, Command} from './commands/Comman
 export {CompositeCommand} from './commands/CompositeCommand'
 
 // mvvm
-export {IViewModel, IMountAware} from './mvvm/ViewModel'
+export {IViewModel, IMountAware, input, output} from './mvvm/ViewModel'
 export {IView, IViewProps} from './mvvm/View'
 export {IViewModelLocatorProps, IViewModelResolver, ViewModelLocator} from './mvvm/ViewModelLocator'
 export {createComponent} from './mvvm/createComponent'
