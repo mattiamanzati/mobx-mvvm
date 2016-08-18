@@ -31,7 +31,7 @@ export class PubSubEventService{
     /**
      * dispatches an event through pub sub
      */
-    dispatch(event: IPubSubEvent){
+    dispatch<TPubSubEvent extends IPubSubEvent>(event: TPubSubEvent){
         // simply dispatch the event
         return this.onMessage.dispatch(event)
     }

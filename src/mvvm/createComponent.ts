@@ -131,6 +131,9 @@ export function createComponent<TProps, TViewModel extends IViewModel>(component
         // return the new component
         const NewComponentClass = NewComponent as React.ComponentClass<any>
         NewComponentClass.displayName = displayName
+        NewComponentClass.contextTypes = {
+            resolver: React.PropTypes.func
+        }
 
         return NewComponentClass
     }

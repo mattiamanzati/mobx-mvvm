@@ -1,6 +1,6 @@
 {
   "name": "mobx-mvvm",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "MobX MVVM solution based off React and inspired by Prism",
   "main": "./lib/index.js",
   "typings": "./declarations/index.d.ts",
