@@ -12,4 +12,20 @@ export class Todo{
     id = newId()
     @observable text = ''
     @observable done = false
+
+    serialize(){
+        return {
+            id: this.id,
+            text: this.text,
+            done: this.done
+        }
+    }
+
+    static deserialize(json: Object){
+        const todo = new Todo()
+        todo.id = json['id'] || newId()
+        todo.text = json['text'] || ''
+        todo.done = json['done'] || false
+        return todo
+    }
 }

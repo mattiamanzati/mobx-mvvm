@@ -1,15 +1,16 @@
 {
     "compilerOptions": {
         "target": "es2015",
+        "outDir": "lib-es2015",
         "module": "commonjs",
-        "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "declaration": true,
-        "noImplicitAny": true,
-        "declarationDir": "./declarations",
-        "outDir": "./lib-es2015",
-        "jsx": "react"
+        "declarationDir": "declarations"
     },
+    "include": [
+        "src"
+    ],
     "files": [
         "./typings/index.d.ts",
         "./node_modules/reflect-metadata/reflect-metadata.d.ts",

@@ -1,12 +1,12 @@
 {
   "name": "mobx-mvvm",
-  "version": "1.0.5",
-  "description": "MobX MVVM solution based off React and inspired by Prism",
+  "version": "1.1.0",
+  "description": "MVVM solution based on React and MobX",
   "main": "./lib/index.js",
   "typings": "./declarations/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:lib": "tsc && babel lib-es2015 --out-dir lib",
+    "build:lib": "tsc && babel lib-es2015 --out-dir lib && rimraf lib-es2015",
     "clean:lib": "rimraf declarations && rimraf lib && rimraf lib-es2015",
     "prepublish": "npm run clean:lib && npm run build:lib"
   },

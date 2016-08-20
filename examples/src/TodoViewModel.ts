@@ -1,15 +1,39 @@
 import {observable} from 'mobx'
-import {IViewModel, IMountAware, createEvent, input, output} from '../../src/index'
+import {IViewModel, EventEmitter, input, output} from '../../src/index'
+
 import {Todo} from './Todo'
 
-export class TodoViewModel implements IViewModel, IMountAware{
+export class TodoViewModel implements IViewModel{
     // list of todos
     @observable todos: Todo[] = []   
-    // current user, passed in from inputs in createComponent()
+    // current user, passed in from Component
     @input @observable user: string = ''
-    // action to fire whenever a todo is added, subscribed from outputs in createComponent()
-    @output onTodoAdded = createEvent<Todo>()
-    @output onTodoSaved = createEvent<Todo[]>()
+    // action to fire whenever a todo is added, subscribed from Component
+    @output onTodoAdded = new EventEmitter<Todo>()
+    @output onTodoSaved = new EventEmitter<Todo[]>()
+
+    constructor(){
+        // load todos, if any are saved
+        if(window.localStorage){
+            const json = JSON.parse(window.localStorage.getItem("todos") || "[]")
+            this.todos = json.map(todo => Todo.deserialize(todo))
+        }
+    }
+
+    // another view action
+    save(){
+        // actual save logic
+        if(window.localStorage){
+            window.localStorage.setItem(
+                "todos", 
+                JSON.stringify(
+                    this.todos.map(todo => todo.serialize())
+                )
+            )
+        }
+        // dispatch the saved event
+        this.onTodoSaved.emit(this.todos)
+    }
 
     // view action
     add(){
@@ -17,15 +41,14 @@ export class TodoViewModel implements IViewModel, IMountAware{
         const newTodo = new Todo()
         this.todos.push(newTodo)
         // dispatch the onTodoAdded event
-        this.onTodoAdded.dispatch(newTodo)
+        this.onTodoAdded.emit(newTodo)
     }
 
-    save(){
-        this.onTodoSaved.dispatch(this.todos)
-    }
-
-    // lifecycle method example
-    willMount(){
-        console.log('I will be mount! :D')
+    // view action
+    remove(todo: Todo){
+        const index = this.todos.indexOf(todo)
+        if(index > -1){
+            this.todos.splice(index, 1)
+        }
     }
 }
