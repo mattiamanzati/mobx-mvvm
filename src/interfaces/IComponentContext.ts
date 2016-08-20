@@ -1,4 +1,4 @@
-import {IViewModelResolver} from './IModelResolver'
+import {IViewModelResolver} from './IViewModelResolver'
 
 export interface IComponentContext{
     resolver: IViewModelResolver
