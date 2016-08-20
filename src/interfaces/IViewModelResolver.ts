@@ -1,5 +1,5 @@
 import {IViewModel} from './IViewModel'
 
-export interface IModelResolver{
+export interface IViewModelResolver{
     (key: any): IViewModel
 }
