@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {observer} from 'mobx-react'
-import {IView, IViewProps, IViewModel, IComponentDefinition, IComponentState, ILinkDisposer} from './interfaces/index'
+import {IView, IViewProps, IComponentProps, IViewModel, IComponentDefinition, IComponentState, ILinkDisposer} from './interfaces/index'
 import {createLink} from './createLink'
 import {createModel} from './createModel'
 import {disposeModel} from './disposeModel'
@@ -18,9 +18,9 @@ export function createComponent<TComponentProps>(definition: IComponentDefinitio
         throw "[mobx-mvvm] ERROR! view should be provided in order to create a component!"
     }
 
-    return (ViewModel: any): React.ComponentClass<TComponentProps & IViewProps<IViewModel>> => {
+    return (ViewModel: any): React.ComponentClass<TComponentProps & IComponentProps<IViewModel>> => {
         // shortcuts
-        type TProps = TComponentProps & IViewProps<IViewModel>
+        type TProps = TComponentProps & IComponentProps<IViewModel>
 
         // hack because mobx-react complains about a component being either stateless or class component
         const ObserverComponent = observer(view as React.StatelessComponent<TProps>)
@@ -49,6 +49,10 @@ export function createComponent<TComponentProps>(definition: IComponentDefinitio
             componentWillUnmount(){
                 // first, dispose any old link
                 if(this.linkDisposer) this.linkDisposer()
+                // dispose the model ref, if any
+                if(this.props.modelRef){
+                    this.props.modelRef(null)
+                }
                 // ...then dispose the model
                 disposeModel(this.state)
             }
@@ -60,7 +64,7 @@ export function createComponent<TComponentProps>(definition: IComponentDefinitio
         }
 
         // set some props on the component
-        const NewComponentClass = NewComponent as React.ComponentClass<TComponentProps & IViewProps<IViewModel>>
+        const NewComponentClass = NewComponent as React.ComponentClass<TComponentProps & IComponentProps<IViewModel>>
         NewComponentClass.displayName = displayName
         NewComponentClass.contextTypes = {
             resolver: React.PropTypes.any
