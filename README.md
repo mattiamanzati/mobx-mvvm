@@ -37,7 +37,7 @@ It's just a React component with a "model" property!
 import React from 'react'
 
 const view = ({model}) => <div>
-    <button onClick={model.increase()}>-</button>
+    <button onClick={model.decrease()}>-</button>
     <span>{model.current}</span>
     <button onClick={model.increase()}>+</button>
 </div>
